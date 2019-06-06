@@ -1,0 +1,94 @@
+<style>
+  table,
+  th,
+  td {
+    border: 1px solid grey;
+    border-collapse: collapse;
+    padding: 5px;
+  }
+
+  table tr:nth-child(odd) {
+    background-color: #f1f1f1;
+  }
+
+  table tr:nth-child(even) {
+    background-color: #ffffff;
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  .pagination {
+    display: flex;
+  }
+
+  .pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+
+  .pagination>li {
+    border: 2px blue solid;
+  }
+</style>
+<form>
+  <div class="input-group-addon"><i class="fa fa-search">
+      <label for="search">Filter by rating</label>
+      <select id="search" (change)="dataChanged($event)" name="search">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+      </select>
+    </i></div>
+  <table>
+    <tr>
+      <th *ngFor="let col of columns">
+        {{col}}
+      </th>
+    </tr>
+    <tr *ngFor="let movie of pagedItems">
+      <td *ngFor="let col of columns">
+        <div *ngIf="col == 'title'">{{movie['title']}}</div>
+        <div *ngIf="col == 'genre'">
+          <ul *ngFor="let genre of movie['genre_ids']">
+            <div *ngFor="let g of genres">
+
+              <li *ngIf="g['id'] == genre">{{g['name']}}</li>
+            </div>
+          </ul>
+        </div>
+        <div *ngIf="col == 'image'">
+          <img src="{{images['images']['base_url']}}{{images['images']['poster_sizes'][1]}}{{movie['poster_path']}}"
+            alt="title-image" />
+        </div>
+      </td>
+    </tr>
+  </table>
+  <!-- pager -->
+  <ul *ngIf="pager.pages && pager.pages.length" class="pagination" style="list-style: none;">
+    <li [ngClass]="{disabled:pager.currentPage === 1}">
+      <a (click)="setPage(1)">First</a>
+    </li>
+    <li [ngClass]="{disabled:pager.currentPage === 1}">
+      <a (click)="setPage(pager.currentPage - 1)">Previous</a>
+    </li>
+    <li *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage === page}">
+      <a (click)="setPage(page)">{{page}}</a>
+    </li>
+    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+      <a (click)="setPage(pager.currentPage + 1)">Next</a>
+    </li>
+    <li [ngClass]="{disabled:pager.currentPage === pager.totalPages}">
+      <a (click)="setPage(pager.totalPages)">Last</a>
+    </li>
+  </ul>
+</form>
